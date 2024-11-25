@@ -1,4 +1,4 @@
-export const emojis = [
+const emojis = [
   "🤌",
   "🪿",
   "😍",
@@ -89,3 +89,11 @@ export const emojis = [
   "🦠",
   "🌊",
 ];
+
+export const buildMaps = () => {
+  const mapCount = 16;
+  const shuffled = emojis.sort(() => 0.5 - Math.random());
+  const firstMap = shuffled.slice(0, mapCount);
+  const secondMap = shuffled.slice(15, mapCount);
+  return { firstMap, secondMap };
+};

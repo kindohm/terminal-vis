@@ -1,43 +1,7 @@
 import { Message, run } from "./oscReceiver";
 import hash from "object-hash";
 import zalgo from "to-zalgo";
-// import {zalgoGeneration, zalgoRandomGeneration, unzalgoText} from 'zalgo-generator';
-
-const eMap = [
-  "🤌",
-  "🪿",
-  "😍",
-  "💊",
-  "🫁",
-  "🦷",
-  "🥑",
-  "🦩",
-  "💅",
-  "🦑",
-  "🔫",
-  "🐬",
-  "🍕",
-  "💅",
-  "🌈"
-];
-
-const eMap2 = [
-  "🥶",
-  "👻",
-  "🩲",
-  "🐝",
-  "🦋",
-  "🍄",
-  "🌈",
-  "🍳",
-  "🌮",
-  "⛩️",
-  "📀",
-  "🔋",
-  "🩻",
-  "🤙",
-  "💦"
-];
+import { buildMaps } from "./emojis";
 
 const modWords = [
   `
@@ -50,17 +14,26 @@ f̵͔̮͖̖͕̃̎̏̒̍̚͝ͅư̵̻̔̑̀͒͌̏̀͘c̵̦͓̟͉͇͆̊̑͑̉͘̚͝
 `,
 ];
 
+let maps = buildMaps();
+const changeMapCount = 20;
+
 const messageHandler = (dict: Message) => {
-  
   if (dict.progNum || dict.midichan === undefined) {
     return;
   }
 
+  if (dict.cycle % changeMapCount === 0) {
+    maps = buildMaps();
+  }
+
+  const { firstMap, secondMap } = maps;
 
   const emoji =
     dict.s === "rytm"
-      ? eMap[dict.midichan ?? 12] ?? "🫠"
-      : (dict.amp ?? 0) > 0.4 ? eMap2[dict.midichan ?? 12] : "";
+      ? firstMap[dict.midichan ?? 12] ?? "🫠"
+      : (dict.amp ?? 0) > 0.4
+      ? secondMap[dict.midichan ?? 12]
+      : "...";
 
   if (dict.cycle % 25 === 0) {
     process.stdout.write(
